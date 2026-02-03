@@ -89,10 +89,6 @@ jobs:
     - name: Enable Cheat Driver Support
       working-directory: kernel
       run: |
-        # Append configs needed for Cheat Drivers & Loaders
-        # Replace 'vendor/lito_defconfig' with your actual defconfig path
-        cat <<EOT >> arch/arm64/configs/defconfig
-        cat <<EOT >> arch/arm64/configs/pipa_defconfig
         
         # Required for Cheat Loaders (Fixes /data/tmp mount error)
         CONFIG_OVERLAY_FS=y
