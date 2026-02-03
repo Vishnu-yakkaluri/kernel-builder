@@ -84,6 +84,33 @@ jobs:
       run: |
         # Force disable PIE to fix the linker error
         sed -i 's/^KBUILD_CFLAGS[[:space:]]*:=/KBUILD_CFLAGS := -fno-PIE -fno-pic /' Makefile
+
+
+    - name: Enable Cheat Driver Support
+      working-directory: kernel
+      run: |
+        # Append configs needed for Cheat Drivers & Loaders
+        # Replace 'vendor/lito_defconfig' with your actual defconfig path
+        cat <<EOT >> arch/arm64/configs/defconfig
+        cat <<EOT >> arch/arm64/configs/pipa_defconfig
+        
+        # Required for Cheat Loaders (Fixes /data/tmp mount error)
+        CONFIG_OVERLAY_FS=y
+        
+        # Required for Memory Hooking
+        CONFIG_KPROBES=y
+        CONFIG_KALLSYMS=y
+        CONFIG_KALLSYMS_ALL=y
+        
+        # Required to load the driver .ko file
+        CONFIG_MODULES=y
+        CONFIG_MODULE_UNLOAD=y
+        CONFIG_MODVERSIONS=y
+        
+        # Disable strict signing so your custom driver loads
+        # CONFIG_MODULE_SIG_FORCE is not set
+        # CONFIG_MODULE_SIG_ALL is not set
+        EOT
     
     - name: Build kernel
       run: |
