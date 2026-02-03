@@ -78,10 +78,6 @@ jobs:
         echo "KERNEL_BRANCH=$CURRENT_BRANCH" >> $GITHUB_ENV
         echo "Current branch: $CURRENT_BRANCH"
         git log -1
-
-        - name: Fix Clang/Linker Error
-          run: |
-        echo "KBUILD_CFLAGS += -fno-PIE -fno-pic" >> arch/arm64/Makefile
     
     - name: Build kernel
       run: |
