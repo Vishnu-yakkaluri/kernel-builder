@@ -79,12 +79,6 @@ jobs:
         echo "Current branch: $CURRENT_BRANCH"
         git log -1
 
-    - name: Fix Linker Error
-      working-directory: kernel
-      run: |
-        # Force disable PIE to fix the linker error
-        sed -i 's/^KBUILD_CFLAGS[[:space:]]*:=/KBUILD_CFLAGS := -fno-PIE -fno-pic /' Makefile
-
 
     - name: Enable Cheat Driver Support
       working-directory: kernel
