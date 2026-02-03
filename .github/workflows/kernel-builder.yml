@@ -80,12 +80,14 @@ jobs:
         git log -1
 
     - name: Fix Linker & Configure for 3rd Party Drivers
+      working-directory: kernel   # <--- ADD THIS LINE (Tells it where to run)
       run: |
         # 1. FIX THE LINKER ERROR (Crucial)
-        # This forces the compiler to stop using PIE mode, which fixes R_AARCH64_ABS32
         sed -i 's/^KBUILD_CFLAGS[[:space:]]*:=/KBUILD_CFLAGS := -fno-PIE -fno-pic /' Makefile
         
-        # 2. ENABLE NECESSARY CONFIGS (For Cheats/Drivers)
+        # 2. ENABLE CONFIGS (For Cheats/Drivers)
+        # Note: We assume 'out' is inside the kernel folder. 
+        # If your build puts 'out' somewhere else, verify this path!
         ./scripts/config --file out/.config \
             --enable CONFIG_KALLSYMS \
             --enable CONFIG_KALLSYMS_ALL \
@@ -94,7 +96,7 @@ jobs:
             --enable CONFIG_MODULE_UNLOAD \
             --enable CONFIG_MODVERSIONS
             
-        # 3. DISABLE SIGNING ENFORCEMENT (So you can load unsigned drivers)
+        # 3. DISABLE SIGNING ENFORCEMENT
         ./scripts/config --file out/.config \
             --disable CONFIG_MODULE_SIG_FORCE \
             --disable CONFIG_MODULE_SIG_ALL
