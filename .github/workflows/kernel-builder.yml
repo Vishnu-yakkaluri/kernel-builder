@@ -79,33 +79,11 @@ jobs:
         echo "Current branch: $CURRENT_BRANCH"
         git log -1
 
-    - name: Fix Linker & Configure for 3rd Party Drivers
-      working-directory: kernel   # <--- ADD THIS LINE (Tells it where to run)
+    - name: Fix Linker Error
+      working-directory: kernel
       run: |
-        # 1. FIX THE LINKER ERROR (Crucial)
+        # Force disable PIE to fix the linker error
         sed -i 's/^KBUILD_CFLAGS[[:space:]]*:=/KBUILD_CFLAGS := -fno-PIE -fno-pic /' Makefile
-        
-        # 2. ENABLE CONFIGS (For Cheats/Drivers)
-        # Note: We assume 'out' is inside the kernel folder. 
-        # If your build puts 'out' somewhere else, verify this path!
-        ./scripts/config --file out/.config \
-            --enable CONFIG_KALLSYMS \
-            --enable CONFIG_KALLSYMS_ALL \
-            --enable CONFIG_KPROBES \
-            --enable CONFIG_MODULES \
-            --enable CONFIG_MODULE_UNLOAD \
-            --enable CONFIG_MODVERSIONS
-            
-        # 3. DISABLE SIGNING ENFORCEMENT
-        ./scripts/config --file out/.config \
-            --disable CONFIG_MODULE_SIG_FORCE \
-            --disable CONFIG_MODULE_SIG_ALL
-            
-        # 4. REFRESH CONFIG
-        make O=out ARCH=arm64 olddefconfig
-        
-        # Verify
-        grep "KBUILD_CFLAGS :=" Makefile
     
     - name: Build kernel
       run: |
