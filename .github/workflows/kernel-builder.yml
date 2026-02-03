@@ -100,7 +100,6 @@ jobs:
         # Disable strict signing so your custom driver loads
         # CONFIG_MODULE_SIG_FORCE is not set
         # CONFIG_MODULE_SIG_ALL is not set
-        EOT
     
     - name: Build kernel
       run: |
